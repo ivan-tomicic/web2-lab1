@@ -1,3 +1,19 @@
 from django.db import models
 
-# Create your models here.
+
+class Person(models.Model):
+    pass
+
+class Manager(Person):
+
+class Player(Person):
+    pass
+
+class Stadium(models.Model):
+    pass
+
+class Team(models.Model):
+    pass
+
+class Match(models.Model):
+    pass
