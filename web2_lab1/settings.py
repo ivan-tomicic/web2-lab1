@@ -185,6 +185,11 @@ AUTH0_CLIENT_SECRET = os.environ.get("AUTH0_CLIENT_SECRET")
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
+
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql',

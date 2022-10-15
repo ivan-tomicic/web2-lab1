@@ -32,7 +32,7 @@ class Match(models.Model):
     away_team = models.ForeignKey(Team, unique=False, null=False, on_delete=models.PROTECT, related_name="away_team")
     begin_time = models.DateTimeField(null=False)
     end_time = models.DateTimeField(null=False)
-    stadium = models.ForeignKey(Stadium, null=False, unique=False, on_delete=models.SET_NULL)
+    stadium = models.ForeignKey(Stadium, null=False, unique=False, on_delete=models.PROTECT)
 
 class Comment(models.Model):
     text = models.TextField(blank=False, max_length=10000, unique=False)
