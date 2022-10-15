@@ -30,16 +30,6 @@ def callback(request):
     return redirect(request.build_absolute_uri(reverse("index")))
 
 
-def index(request):
-    return render(
-        request,
-        "index.html",
-        context={
-            "session": request.session.get("user"),
-            "pretty": json.dumps(request.session.get("user"), indent=4),
-        },
-    )
-
 def logout(request):
     request.session.clear()
 
