@@ -25,7 +25,13 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, "web2_lab1", "templates")
 SECRET_KEY = 'django-insecure-!jt1l6ygwvy2q1%+*@@f1m#k1_a(ve0_(!)sy4-s9-aj!=&@ml'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
+ENV_FILE = find_dotenv()
+if ENV_FILE:
+    load_dotenv(ENV_FILE)
+
+
+DEBUG = os.environ.get("DEBUG", False)
 
 ALLOWED_HOSTS = ['web2-lab1.herokuapp.com', 'localhost', '127.0.0.1']
 
@@ -171,9 +177,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ENV_FILE = find_dotenv()
-if ENV_FILE:
-    load_dotenv(ENV_FILE)
 
 
 # Load Auth0 application settings into memory
@@ -200,15 +203,3 @@ DATABASES = {
        'PORT': '5432',
    }
 }
-
-
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
-
-STATIC_URL = '/static/'
-
-# Extra lookup directories for collectstatic to find static files
-
-#  Add configuration for static files storage using whitenoise
