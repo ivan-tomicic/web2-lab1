@@ -18,6 +18,8 @@ class Team(models.Model):
 class Match(models.Model):
     home_team = models.ForeignKey(Team, unique=False, null=False, on_delete=models.PROTECT, related_name="home_team")
     away_team = models.ForeignKey(Team, unique=False, null=False, on_delete=models.PROTECT, related_name="away_team")
+    home_team_goals = models.IntegerField(null=False)
+    away_team_goals = models.IntegerField(null=False)
     begin_time = models.DateTimeField(null=False)
     end_time = models.DateTimeField(null=False)
     stadium = models.ForeignKey(Stadium, null=False, unique=False, on_delete=models.PROTECT)
