@@ -32,3 +32,18 @@ class Comment(models.Model):
     match_round = models.IntegerField(null=False, validators=[MinValueValidator(1), MaxValueValidator(36)])
 
 
+class TableTeam(models.Model):
+    name = models.TextField(primary_key=True)
+    matches_played = models.IntegerField()
+    win = models.IntegerField()
+    draw = models.IntegerField()
+    lose = models.IntegerField()
+    goals_for = models.IntegerField()
+    goals_against = models.IntegerField()
+    goal_difference = models.IntegerField()
+    points = models.IntegerField()
+    class Meta:
+        managed = False
+        db_table = "table_22_23"
+
+
