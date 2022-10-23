@@ -1,10 +1,126 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<!doctype html>
 
+<style>
+
+    /* The side navigation menu */
+    .sidebar {
+        margin: 0;
+        padding: 0;
+        width: 300px;
+        background-color: #f1f1f1;
+        position: fixed;
+        height: 100%;
+        overflow: auto;
+    }
+
+    /* Sidebar links */
+    .sidebar a {
+        display: block;
+        color: black;
+        padding: 16px;
+        text-decoration: none;
+    }
+
+    .userinfo {
+        display: block;
+        color: black;
+        padding: 16px;
+        text-decoration: none;
+
+        width: fit-content;
+        block-size: fit-content;
+    }
+
+    .sidebar img {
+        display: block;
+        color: black;
+        padding: 16px;
+        text-decoration: none;
+        width: 100px;
+        height: 100px;
+    }
+
+    /* Active/current link */
+    .sidebar a.active {
+        background-color: #04AA6D;
+        color: white;
+    }
+
+    /* Links on mouse-over */
+    .sidebar a:hover:not(.active) {
+        background-color: #555;
+        color: white;
+    }
+
+    /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
+    div.content {
+        margin-left: 200px;
+        padding: 1px 16px;
+        height: 1000px;
+    }
+
+    /* On screens that are less than 700px wide, make the sidebar into a topbar */
+    @media screen and (max-width: 700px) {
+        .sidebar {
+            width: 100%;
+            height: auto;
+            position: relative;
+        }
+        .sidebar a {float: left;}
+        div.content {margin-left: 0;}
+    }
+
+    /* On screens that are less than 400px, display the bar vertically, instead of horizontally */
+    @media screen and (max-width: 400px) {
+        .sidebar a {
+            text-align: center;
+            float: none;
+        }
+    }
+
+</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<html>
+<head>
+
+    <title>HNL Liga</title>
+</head>
+
+<body>
+<div class="sidebar">
+
+
+
+    {% if session %}
+        <img src="{{session.userinfo.picture}}" />
+        <p class="userinfo">{{session.userinfo.name}}</p>
+        <a href="{% url 'logout' %}">Odjavi se</a>
+
+    {% else %}
+
+        <a href="{% url 'login' %}">Ulogiraj se</a>
+    {% endif %}
+
+</div>
+
+
+<div id="content", name="content", class="content">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <h1 class="mt-2">HNL 22/23</h1>
+            <hr class="mt-0 mb-4">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>

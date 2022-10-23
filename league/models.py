@@ -26,6 +26,7 @@ class Match(models.Model):
 class Comment(models.Model):
     text = models.TextField(blank=False, max_length=10000, unique=False)
     user = models.ForeignKey(User, unique=False, null=False, on_delete=models.CASCADE)
+    created_on = models.DateTimeField(auto_now_add=True)
     match_round = models.IntegerField(null=False, validators=[MinValueValidator(1), MaxValueValidator(36)])
 
 
