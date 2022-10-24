@@ -3,37 +3,39 @@
 
 
 {% block content %}
-
-    <style>
-        .styled-match {
-            border-collapse: collapse;
-            margin: 25px 0;
-            font-size: 0.9em;
-            font-family: sans-serif;
-            min-width: 400px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .img{
-            max-height:50px;
-            max-width:50px;
-            height:auto;
-            width:auto;
-        }
-    </style>
-
-    <meta charset="UTF-8">
-    <title>Title</title>
+    {% include 'css/table.html' %}
     <h1 class="mt-2">Kolo {{ round_number }}</h1>
 
-    <div class="styled-match">
-
+    <table class="styled-table">
+        <thead>
+        <tr>
+            <th>Domaćin</th>
+            <th>Rezultat</th>
+            <th>Gost</th>
+            <th>Početak</th>
+        </tr>
+        </thead>
+        <tbody>
         {% for match in matches %}
-            <img class="img" src="{{ match.home_team_photo }}">
+            <tr>
+                <td>
+                    <img class="img" src="{{ match.home_team_photo }}">
+                    <a>{{ match.home_team_name }}</a>
+                </td>
+                <td>
+                    <a style="font-size: x-large">{{ match.home_team_goals }}:{{ match.away_team_goals }}</a>
+                </td>
+                <td>
+                    <a>{{ match.away_team_name }}</a>
+                    <img class="img" src="{{ match.away_team_photo }}">
+                </td>
+                <td>
+                    Danas
+                </td>
+            </tr>
         {% endfor %}
-    </div>
-
-
+        </tbody>
+    </table>
 {% endblock %}
 
 

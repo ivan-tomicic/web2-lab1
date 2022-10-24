@@ -30,7 +30,9 @@ def match_round(request, match_round):
     logger.info('round')
     logger.info(match_round)
 
-    matches = [m for m in Match.objects.filter(match_round=match_round).order_by("game_played").annotate(home_team_photo=F('home_team__photo_url'),
+    matches = [m for m in Match.objects.filter(match_round=match_round).order_by("game_played").annotate(home_team_name=F('home_team__name'),
+                                                                                                         away_team_name=F('away_team__name'),
+                                                                                                         home_team_photo=F('home_team__photo_url'),
                                                                                                          away_team_photo=F('away_team__photo_url')).values()]
     print(matches)
     return render(
