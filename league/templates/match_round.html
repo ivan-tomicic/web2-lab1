@@ -1,11 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends 'base_site.html' %}
+
+
+
+{% block content %}
+
+    <style>
+        .styled-match {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            font-family: sans-serif;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .img{
+            max-height:50px;
+            max-width:50px;
+            height:auto;
+            width:auto;
+        }
+    </style>
+
     <meta charset="UTF-8">
     <title>Title</title>
     <h1 class="mt-2">Kolo {{ round_number }}</h1>
-    <hr class="mt-0 mb-4"></head>
-<body>
 
-</body>
-</html>
+    <div class="styled-match">
+
+        {% for match in matches %}
+            <img class="img" src="{{ match.home_team_photo }}">
+        {% endfor %}
+    </div>
+
+
+{% endblock %}
+
+

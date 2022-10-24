@@ -13,6 +13,7 @@ class Stadium(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
+    photo_url = models.URLField(null=True)
     home_stadium = models.ForeignKey(Stadium, unique=False, null=True, on_delete=models.SET_NULL)
 
 class Match(models.Model):
