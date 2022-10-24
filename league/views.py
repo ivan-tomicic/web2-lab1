@@ -3,8 +3,7 @@ import json, logging
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from league.models import TableTeam, Team
-from league.serializers import TableTeamSerializer, TeamSerializer, TableSerializer
+from league.models import TableTeam
 
 logger = logging.getLogger('info')
 

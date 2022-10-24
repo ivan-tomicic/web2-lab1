@@ -1,12 +1,78 @@
 {% extends 'base_site.html' %}
 
 {% block content %}
+
+    <style>
+        .styled-table {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            font-family: sans-serif;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+        .styled-table thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+        }
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+    </style>
+
+
     <html>
     <head>
         <meta charset="utf-8" />
 
     </head>
     <body>
+    <table class="styled-table">
+        <thead>
+        <tr>
+            <th>Klub</th>
+            <th>Odigrano</th>
+            <th>Pobjede</th>
+            <th>Neriješene</th>
+            <th>Izgubljene</th>
+            <th>Bodovi</th>
+            <th>Postignuti golovi</th>
+            <th>Primljeni golovi</th>
+            <th>Gol razlika</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for team in teams %}
+            <tr>
+                <td>{{ team.name }}</td>
+                <td>{{ team.matches_played }}</td>
+                <td>{{ team.win }}</td>
+                <td>{{ team.draw }}</td>
+                <td>{{ team.lose }}</td>
+                <td>{{ team.points }}</td>
+                <td>{{ team.goals_for }}</td>
+                <td>{{ team.goals_against }}</td>
+                <td>{{ team.goal_difference }}</td>
+            </tr>
+        {% endfor %}
+        <!-- and so on... -->
+        </tbody>
+    </table>
+
     </body>
     </html>
 {% endblock %}
