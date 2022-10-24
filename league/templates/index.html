@@ -44,15 +44,15 @@
     <table class="styled-table">
         <thead>
         <tr>
-            <th>Klub</th>
-            <th>Odigrano</th>
-            <th>Pobjede</th>
-            <th>Neriješene</th>
-            <th>Izgubljene</th>
-            <th>Bodovi</th>
-            <th>Postignuti golovi</th>
-            <th>Primljeni golovi</th>
-            <th>Gol razlika</th>
+            <th>KLUB</th>
+            <th>U</th>
+            <th>P</th>
+            <th>N</th>
+            <th>I</th>
+            <th>RAZ</th>
+            <th>+/-</th>
+            <th>BOD</th>
+
         </tr>
         </thead>
         <tbody>
@@ -63,15 +63,21 @@
                 <td>{{ team.win }}</td>
                 <td>{{ team.draw }}</td>
                 <td>{{ team.lose }}</td>
-                <td>{{ team.points }}</td>
-                <td>{{ team.goals_for }}</td>
-                <td>{{ team.goals_against }}</td>
                 <td>{{ team.goal_difference }}</td>
+                <td>{{ team.goals_for}}:{{ team.goals_against }}</td>
+                <td>{{ team.points }}</td>
             </tr>
         {% endfor %}
-        <!-- and so on... -->
+
         </tbody>
+
     </table>
+    <h1>Kola: </h1>
+    <hr class="mt-0 mb-4">
+    {% for round in match_rounds %}
+        <a href={{ request.path }}{{ "match_round/"}}{{ round.match_round }}> Kolo broj {{ round.match_round }}</a> Odigrano {{ round.played }}/{{ round.played|add:round.not_played }}
+        <br>
+    {% endfor %}
 
     </body>
     </html>
