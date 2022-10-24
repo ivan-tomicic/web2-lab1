@@ -1,9 +1,10 @@
 {% extends 'base_site.html' %}
 
+{% load tz %}
+
 
 
 {% block content %}
-    {% include 'css/table.html' %}
     <h1 class="mt-2">Kolo {{ round_number }}</h1>
 
     <table class="styled-table">
@@ -22,20 +23,33 @@
                     <img class="img" src="{{ match.home_team_photo }}">
                     <a>{{ match.home_team_name }}</a>
                 </td>
+
                 <td>
-                    <a style="font-size: x-large">{{ match.home_team_goals }}:{{ match.away_team_goals }}</a>
+                    {% if match.home_team_goals and match.away_team_goals%}
+                        <a style="font-size: x-large">{{ match.home_team_goals }}:{{ match.away_team_goals }}</a>
+                    {% else %}
+                        <a style="color: red; font-size: x-large">TBD</a>
+                    {% endif %}
+
                 </td>
                 <td>
                     <a>{{ match.away_team_name }}</a>
                     <img class="img" src="{{ match.away_team_photo }}">
                 </td>
                 <td>
-                    Danas
+                    <a> {% timezone "Europe/Zagreb" %}
+                        {{ match.begin_time|date:'d.m.Y H:i' }}
+                    {% endtimezone %}
+                    </a>
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+
+    {% if session %}
+        {% include 'comments.html' with comments=comments%}
+    {% endif %}
 {% endblock %}
 
 

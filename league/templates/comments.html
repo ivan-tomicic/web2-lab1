@@ -1,0 +1,16 @@
+{% load tz %}
+
+<div>
+    <h1>
+        KOMENTARI
+    </h1>
+
+    {% for comment in comments %}
+        <a> {{ comment.text }}</a><br>
+        {% timezone "Europe/Zagreb" %}
+            {{ comment.created_on|date:'d.m.Y H:i' }}
+        {% endtimezone %}
+        <a> {{ comment.username }}</a><br>
+    {% endfor %}
+
+</div>

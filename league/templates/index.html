@@ -19,7 +19,7 @@
         <tbody>
         {% for team in teams %}
             <tr>
-                <td>{{ team.name }}</td>
+                <td> <img class="img" src="{{ team.photo_url }}"> {{ team.name }}</td>
                 <td>{{ team.matches_played }}</td>
                 <td>{{ team.win }}</td>
                 <td>{{ team.draw }}</td>
