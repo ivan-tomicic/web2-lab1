@@ -64,15 +64,12 @@
     {% for comment in comments %}
 
         <div class="card border-success mb-3" style="max-width: 27rem;">
-            <div class="card-header  bg-light border-success">{{ comment.username }}
+            <div class="card-header  bg-light border-success">{{ comment.username }} &nbsp&nbsp&nbsp&nbsp {% timezone "Europe/Zagreb" %}
+                    {{ comment.created_on|date:'d.m.Y H:i' }}
+                {% endtimezone %}
             </div>
             <div class="card-body">
                 <p class="card-text">{{ comment.text }}</p>
-            </div>
-            <div class="card-footer bg-light border-success">
-                {% timezone "Europe/Zagreb" %}
-                    {{ comment.created_on|date:'d.m.Y H:i' }}
-                {% endtimezone %}
             </div>
          {% if userinfo.sub == comment.user_id or userinfo.sub == 'auth0|63549aff5615e6a1bdb55e3d'%}
             <i class="fa fa-trash-o" style="font-size:35px;color:red;margin-top: 5px; margin-bottom: 5px; margin-left: 5px" type="submit"></i>
