@@ -48,7 +48,10 @@
     </table>
 
     {% if session %}
-        {% include 'comments.html' with comments=comments%}
+        <div style="margin-top: 50px">
+            {% include 'comments.html' with comments=comments%}
+        </div>
+
     {% endif %}
 {% endblock %}
 

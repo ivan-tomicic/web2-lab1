@@ -1,16 +1,30 @@
 {% load tz %}
 
 <div>
-    <h1>
+    <h2>
         KOMENTARI
-    </h1>
+    </h2>
+    <form style="margin-bottom: 30px">
+        <div class="form-group">
+            <textarea style="max-width: 27rem;" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Komentiraj</button>
+    </form>
 
     {% for comment in comments %}
-        <a> {{ comment.text }}</a><br>
-        {% timezone "Europe/Zagreb" %}
-            {{ comment.created_on|date:'d.m.Y H:i' }}
-        {% endtimezone %}
-        <a> {{ comment.username }}</a><br>
+
+        <div class="card border-primary mb-3" style="max-width: 27rem;">
+            <div class="card-header">{{ comment.username }}
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ comment.text }}</p>
+            </div>
+            <div class="card-footer bg-light border-success">
+                {% timezone "Europe/Zagreb" %}
+                    {{ comment.created_on|date:'d.m.Y H:i' }}
+                {% endtimezone %}
+            </div>
+        </div>
     {% endfor %}
 
 </div>
