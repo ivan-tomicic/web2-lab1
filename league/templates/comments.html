@@ -1,15 +1,31 @@
+<!DOCTYPE html>
+<html>
+
 {% load tz %}
 
+<head>
+    <script
+            src="https://code.jquery.com/jquery-3.6.1.min.js"
+            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+            crossorigin="anonymous">
+
+    </script>
+</head>
+<body>
 <div>
     <h2>
         KOMENTARI
     </h2>
-    <form style="margin-bottom: 30px">
-        <div class="form-group">
-            <textarea style="max-width: 27rem;" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-        </div>
+    <form id="post-form" style="margin-bottom: 30px">
+        {% csrf_token %}
+        <textarea style="max-width: 27rem;" name="comment_text" class="form-control" id="comment_text" rows="3"></textarea>
+        <input type="hidden" name="user_id" id="user_id" value="{{userinfo.sub}}"/>
+        <input type="hidden" name="username" id="username" value="{{userinfo.name}}"/>
+        <input type="hidden" name="match_round" id="match_round" value="{{match_round}}"/>
         <button class="btn btn-primary" type="submit">Komentiraj</button>
     </form>
+
+
 
     {% for comment in comments %}
 
@@ -27,4 +43,32 @@
         </div>
     {% endfor %}
 
+
 </div>
+</body>
+
+<script>
+    $(document).on('submit','#post-form',function(e){
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            contentType: 'application/json',
+            url: 'league/comment/',
+            headers: {
+                 'X-CSRFToken':$('input[name=csrfmiddlewaretoken]').val()
+            },
+            data: JSON.stringify({
+                user_id:$('#user_id').val(),
+                username:$('#username').val(),
+                comment_text:$('#comment_text').val(),
+                match_round:$('#match_round').val(),
+                'X-CSRFToken':$('input[name=csrfmiddlewaretoken]').val(),
+            }),
+            success: function(data){
+                //alert(data)
+            }
+        });
+        document.getElementById('comment_text').value = ''
+    });
+</script>
+</html>

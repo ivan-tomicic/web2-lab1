@@ -34,7 +34,7 @@ if ENV_FILE:
 DEBUG = os.environ.get("DEBUG", False)
 
 ALLOWED_HOSTS = ['web2-lab1.herokuapp.com', 'localhost', '127.0.0.1']
-
+CSRF_TRUSTED_ORIGINS = ['https://web2-lab1.herokuapp.com', 'http://localhost', 'http://127.0.0.1']
 
 # Application definition
 

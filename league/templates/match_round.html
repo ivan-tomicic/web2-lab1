@@ -5,6 +5,10 @@
 
 
 {% block content %}
+    <head>
+    <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+    </head>
     <h1 class="mt-2">Kolo {{ round_number }}</h1>
 
     <table class="styled-table">
@@ -49,7 +53,7 @@
 
     {% if session %}
         <div style="margin-top: 50px">
-            {% include 'comments.html' with comments=comments%}
+            {% include 'comments.html' with comments=comments userinfo=session.userinfo match_round=round_number%}
         </div>
 
     {% endif %}

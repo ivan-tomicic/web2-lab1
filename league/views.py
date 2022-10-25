@@ -3,6 +3,9 @@ import json, logging
 from django.db.models import Count, Case, When, Q, F
 from django.http import HttpResponse
 from django.shortcuts import render
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 from league.models import TableTeam, Match, Comment
 
@@ -14,6 +17,7 @@ def index(request):
     match_rounds = [r for r in Match.objects.values("match_round").annotate(played=Count(Case(When(game_played=True, then=1))),
                                                                      not_played=Count(Case(When(game_played=False, then=1)))).order_by("match_round")]
 
+    print(json.dumps(request.session.get("user"), indent=4))
     return render(
         request,
         "index.html",
@@ -43,6 +47,18 @@ def match_round(request, match_round):
             "comments": comments if request.session.get("user") else None
         },
     )
+
+
+@api_view(['POST'])
+def comment(request):
+    comment_text = request.POST['comment_text']
+    user_id = request.POST['user_id']
+    username = request.POST['username']
+    match_round = request.POST['match_round']
+    Comment.objects.create(match_round=match_round, user_id=user_id, username=username,text=comment_text)
+
+
+
 
 
 
