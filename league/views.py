@@ -2,7 +2,7 @@ import json, logging
 
 from django.db.models import Count, Case, When, Q, F
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -51,11 +51,13 @@ def match_round(request, match_round):
 
 @api_view(['POST'])
 def comment(request):
-    comment_text = request.POST['comment_text']
-    user_id = request.POST['user_id']
-    username = request.POST['username']
-    match_round = request.POST['match_round']
+    logger.info("SSSSSSSSSSSSSSSSSSS")
+    comment_text = request.data['comment_text']
+    user_id = request.data['user_id']
+    username = request.data['username']
+    match_round = request.data['match_round']
     Comment.objects.create(match_round=match_round, user_id=user_id, username=username,text=comment_text)
+    return redirect('match_round', match_round=match_round)
 
 
 
