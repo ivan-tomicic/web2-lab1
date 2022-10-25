@@ -3,6 +3,39 @@
 
 {% load tz %}
 
+<style>
+    /* The alert message box */
+    .alert {
+        padding: 20px;
+        background-color: #f44336;
+        color: white;
+        margin-bottom: 15px;
+    }
+    .success {
+        padding: 20px;
+        background-color: #08bb3a;
+        color: white;
+        margin-bottom: 15px;
+    }
+    /* The close button */
+    .closebtn {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    /* When moving the mouse over the close button */
+    .closebtn:hover {
+        color: black;
+    }
+
+</style>
+
 <head>
     <script
             src="https://code.jquery.com/jquery-3.6.1.min.js"
@@ -16,21 +49,22 @@
     <h2>
         KOMENTARI
     </h2>
+
     <form id="post-form" style="margin-bottom: 30px">
         {% csrf_token %}
         <textarea style="max-width: 27rem;" name="comment_text" class="form-control" id="comment_text" rows="3"></textarea>
         <input type="hidden" name="user_id" id="user_id" value="{{userinfo.sub}}"/>
         <input type="hidden" name="username" id="username" value="{{userinfo.name}}"/>
         <input type="hidden" name="match_round" id="match_round" value="{{match_round}}"/>
-        <button class="btn btn-primary" type="submit">Komentiraj</button>
+        <button class="btn btn-primary" type="submit" style="margin-top: 20px">Komentiraj</button>
     </form>
 
 
 
     {% for comment in comments %}
 
-        <div class="card border-primary mb-3" style="max-width: 27rem;">
-            <div class="card-header">{{ comment.username }}
+        <div class="card border-success mb-3" style="max-width: 27rem;">
+            <div class="card-header  bg-light border-success">{{ comment.username }}
             </div>
             <div class="card-body">
                 <p class="card-text">{{ comment.text }}</p>
@@ -40,7 +74,13 @@
                     {{ comment.created_on|date:'d.m.Y H:i' }}
                 {% endtimezone %}
             </div>
+         {% if userinfo.sub == comment.user_id or userinfo.sub == 'auth0|63549aff5615e6a1bdb55e3d'%}
+            <i class="fa fa-trash-o" style="font-size:35px;color:red;margin-top: 5px; margin-bottom: 5px; margin-left: 5px" type="submit"></i>
+         {% endif %}
         </div>
+
+
+
     {% endfor %}
 
 
@@ -55,7 +95,7 @@
             contentType: 'application/json',
             url: '/league/comment/',
             headers: {
-                 'X-CSRFToken':$('input[name=csrfmiddlewaretoken]').val()
+                'X-CSRFToken':$('input[name=csrfmiddlewaretoken]').val()
             },
             data: JSON.stringify({
                 user_id:$('#user_id').val(),
@@ -64,7 +104,10 @@
                 match_round:$('#match_round').val()
             }),
             success: function(data){
-                window.location.reload();
+                window.location.reload()
+            },
+            error: function (data) {
+                window.location.reload()
             }
         });
         document.getElementById('comment_text').value = ''

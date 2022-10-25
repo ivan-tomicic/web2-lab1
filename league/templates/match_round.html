@@ -53,7 +53,7 @@
 
     {% if session %}
         <div style="margin-top: 50px">
-            {% include 'comments.html' with comments=comments userinfo=session.userinfo match_round=round_number%}
+            {% include 'comments.html' with comments=comments userinfo=session.userinfo match_round=round_number success=success%}
         </div>
 
     {% endif %}
