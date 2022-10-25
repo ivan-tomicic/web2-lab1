@@ -25,7 +25,7 @@
                 </td>
 
                 <td>
-                    {% if match.home_team_goals and match.away_team_goals%}
+                    {% if match.home_team_goals != None and match.away_team_goals != None %}
                         <a style="font-size: x-large">{{ match.home_team_goals }}:{{ match.away_team_goals }}</a>
                     {% else %}
                         <a style="color: red; font-size: x-large">TBD</a>
