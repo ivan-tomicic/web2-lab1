@@ -16,7 +16,7 @@
         KOMENTARI
     </h2>
 
-    <form id="post-form" style="margin-bottom: 30px">
+    <form id="post-form" style="margin-bottom: 60px">
         {% csrf_token %}
         <textarea style="max-width: 27rem;" name="comment_text" class="form-control" id="comment_text" rows="3"></textarea>
         <input type="hidden" name="match_round" id="match_round" value="{{match_round}}"/>
@@ -27,30 +27,32 @@
     <form id="update-delete-form" style="margin-bottom: 5px; margin-left: 5px">
         {% csrf_token %}
         {% for comment in comments %}
-            <div>{{ comment.username }} &nbsp&nbsp&nbsp&nbsp {% timezone "Europe/Zagreb" %}
-                {{ comment.created_on|date:'d.m.Y H:i' }}
-            {% endtimezone %}
-            </div>
+            <div style="margin-top: 30px">
+                <div>{{ comment.username }} &nbsp&nbsp&nbsp&nbsp {% timezone "Europe/Zagreb" %}
+                    {{ comment.created_on|date:'d.m.Y H:i' }}
+                {% endtimezone %}
+                </div>
 
-            <div>
+
 
                 <input type="hidden" name="editable_comment_id_{{ comment.id }}" id="editable_comment_id__{{ comment.id }}" value="{{comment.id}}"/>
                 {% if userinfo.sub == comment.user_id or userinfo.sub == 'auth0|63549aff5615e6a1bdb55e3d'%}
                     <textarea style="max-width: 27rem;background-color: #dcf1fd" name="editable_comment_text_{{ comment.id }}" class="form-control" id="editable_comment_text_{{ comment.id }}" rows="3">{{ comment.text }}</textarea>
-                    <button class="btn btn-danger" type="button" onclick="deleteComment({{ comment.id }})">
-                        Obriši
-                    </button>
-                    {% if userinfo.sub == comment.user_id %}
-                    <button class="btn btn-success" type="button" onclick="updateComment({{ comment.id }})">
-                        Ažuriraj
-                    </button>
+                    <div style="margin-top: 15px">
+                        <button class="btn btn-danger" type="button" onclick="deleteComment({{ comment.id }})">
+                            Obriši
+                        </button>
+                        {% if userinfo.sub == comment.user_id %}
+                        <button class="btn btn-success" type="button" onclick="updateComment({{ comment.id }})">
+                            Ažuriraj
+                        </button>
+                    </div>
                     {% endif %}
 
                 {% else %}
                     <textarea readonly style="max-width: 27rem;background-color: #ffeef1" name="comment_text" class="form-control" id="comment_text" rows="3">{{ comment.text }}</textarea>
                 {% endif %}
             </div>
-
 
         {% endfor %}
     </form>
