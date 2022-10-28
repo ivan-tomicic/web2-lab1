@@ -85,7 +85,7 @@ class CommentView(viewsets.ModelViewSet):
             return Response(comment_serializer.data, status=status.HTTP_201_CREATED)
         return Response(comment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @transaction.atomic
+
     def destroy(self, request, pk=None):
         user_id = request.session.get("user").get("userinfo").get("sub")
         try:
