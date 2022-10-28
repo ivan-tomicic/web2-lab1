@@ -113,4 +113,10 @@ class CommentView(viewsets.ModelViewSet):
         return Response(comment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+#TODO: implementiraj admin dodavanje, brisanje, uređivanje Match
+class MatchView(viewsets.ModelViewSet):
+    http_method_names = ['post', 'put', 'delete']
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
 
