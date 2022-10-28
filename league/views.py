@@ -6,16 +6,19 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 
+from auth_app.utils import requires_scope
 from league.models import TableTeam, Match, Comment
 from league.serializers import CommentSerializer
 
 logger = logging.getLogger('info')
 
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
 def index(request):
     table_teams = [table_team for table_team in
                    TableTeam.objects.order_by("-points", "-goal_difference", "-goals_for").values()]
@@ -39,6 +42,7 @@ def index(request):
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def match_round(request, match_round):
     matches = [m for m in Match.objects.filter(match_round=match_round).order_by("-game_played").annotate(
         home_team_name=F('home_team__name'),
@@ -59,11 +63,16 @@ def match_round(request, match_round):
     )
 
 
+@permission_classes([AllowAny])
 class CommentView(viewsets.ModelViewSet):
-    http_method_names = ['get', 'post', 'put', 'delete']
+    http_method_names = ['post', 'put', 'delete']
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
+
+
+
+    @requires_scope('create:comment')
     @transaction.atomic
     def create(self, request):
         user_id = request.session.get("user").get("userinfo").get("sub")
