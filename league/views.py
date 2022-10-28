@@ -52,15 +52,21 @@ def match_round(request, match_round):
         away_team_photo=F('away_team__photo_url')).values()]
 
     comments = Comment.objects.filter(match_round=match_round).order_by("-created_on")
+    user = request.session.get("user")
+    is_admin = False
+    if user:
+        is_admin = os.getenv("ADMIN_ID") == user.get("userinfo").get("sub")
     return render(
         request,
         "match_round.html",
         context={
-            "session": request.session.get("user"),
+            "session": user,
             "round_number": match_round,
             "matches": matches,
             "comments": comments if request.session.get("user") else None,
-            "is_admin": os.getenv("ADMIN_ID") == request.session.get("user").get("userinfo").get("sub")
+            "is_admin": is_admin
+
+
         },
     )
 
