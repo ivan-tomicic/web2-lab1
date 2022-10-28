@@ -22,13 +22,8 @@ logger = logging.getLogger('info')
 def index(request):
     table_teams = [table_team for table_team in
                    TableTeam.objects.order_by("-points", "-goal_difference", "-goals_for").values()]
-    match_rounds = [r for r in
-                    Match.objects.values("match_round").annotate(played=Count(Case(When(game_played=True, then=1))),
-                                                                 not_played=Count(
-                                                                     Case(When(game_played=False, then=1)))).order_by(
-                        "match_round")]
+    match_rounds = [r for r in Match.objects.values("match_round").annotate(played=Count('id')).order_by("match_round")]
 
-    print(json.dumps(request.session.get("user"), indent=4))
     return render(
         request,
         "index.html",
@@ -44,7 +39,7 @@ def index(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def match_round(request, match_round):
-    matches = [m for m in Match.objects.filter(match_round=match_round).order_by("-game_played").annotate(
+    matches = [m for m in Match.objects.filter(match_round=match_round).annotate(
         home_team_name=F('home_team__name'),
         away_team_name=F('away_team__name'),
         home_team_photo=F('home_team__photo_url'),
