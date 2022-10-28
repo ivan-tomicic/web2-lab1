@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import mixins, viewsets
 
 from league.models import TableTeam, Match, Comment
 
@@ -51,15 +52,30 @@ def match_round(request, match_round):
     )
 
 
-@api_view(['POST'])
-def comment(request):
-    logger.info("SSSSSSSSSSSSSSSSSSS")
-    comment_text = request.data['comment_text']
-    user_id = request.data['user_id']
-    username = request.data['username']
-    match_round = request.data['match_round']
-    Comment.objects.create(match_round=match_round, user_id=user_id, username=username, text=comment_text)
-    return HttpResponse(status=200)
+class CommentView(viewsets.ModelViewSet):
+    http_method_names = ['get', 'post', 'put', 'delete']
+    #permission_classes = [IsAuthenticated]
+    queryset = Comment.objects.all()
+    """authentication_classes = (JWTTokenUserAuthentication,)
+    queryset = Survey.objects.all()
+    serializer_class = SurveySerializer
+    pagination_class = StandardResultsSetPagination"""
+
+
+    def create(self, request, *args, **kwargs):
+        logger.info("creating comment ---")
+        comment_text = request.data['comment_text']
+        user_id = request.data['user_id']
+        username = request.data['username']
+        match_round = request.data['match_round']
+        Comment.objects.create(match_round=match_round, user_id=user_id, username=username, text=comment_text)
+        return HttpResponse(status=200)
+
+
+
+
+
+
 
 
 

@@ -3,45 +3,11 @@
 
 {% load tz %}
 
-<style>
-    /* The alert message box */
-    .alert {
-        padding: 20px;
-        background-color: #f44336;
-        color: white;
-        margin-bottom: 15px;
-    }
-    .success {
-        padding: 20px;
-        background-color: #08bb3a;
-        color: white;
-        margin-bottom: 15px;
-    }
-    /* The close button */
-    .closebtn {
-        margin-left: 15px;
-        color: white;
-        font-weight: bold;
-        float: right;
-        font-size: 22px;
-        line-height: 20px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    /* When moving the mouse over the close button */
-    .closebtn:hover {
-        color: black;
-    }
-
-</style>
-
 <head>
     <script
             src="https://code.jquery.com/jquery-3.6.1.min.js"
             integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
             crossorigin="anonymous">
-
     </script>
 </head>
 <body>
@@ -56,37 +22,60 @@
         <input type="hidden" name="user_id" id="user_id" value="{{userinfo.sub}}"/>
         <input type="hidden" name="username" id="username" value="{{userinfo.name}}"/>
         <input type="hidden" name="match_round" id="match_round" value="{{match_round}}"/>
-        <button class="btn btn-primary" type="submit" style="margin-top: 20px">Komentiraj</button>
+        <button class="btn btn-primary" type="submit" style="margin-top: 20px" onclick="createComment()">Komentiraj</button>
     </form>
 
 
-
-    {% for comment in comments %}
-
-        <div class="card border-success mb-3" style="max-width: 27rem;">
-            <div class="card-header  bg-light border-success">{{ comment.username }} &nbsp&nbsp&nbsp&nbsp {% timezone "Europe/Zagreb" %}
-                    {{ comment.created_on|date:'d.m.Y H:i' }}
-                {% endtimezone %}
+    <form id="update-delete-form" style="margin-bottom: 5px; margin-left: 5px">
+        {% for comment in comments %}
+            <div>{{ comment.username }} &nbsp&nbsp&nbsp&nbsp {% timezone "Europe/Zagreb" %}
+                {{ comment.created_on|date:'d.m.Y H:i' }}
+            {% endtimezone %}
             </div>
-            <div class="card-body">
-                <p class="card-text">{{ comment.text }}</p>
-            </div>
-         {% if userinfo.sub == comment.user_id or userinfo.sub == 'auth0|63549aff5615e6a1bdb55e3d'%}
-            <i class="fa fa-trash-o" style="font-size:35px;color:red;margin-top: 5px; margin-bottom: 5px; margin-left: 5px" type="submit"></i>
-         {% endif %}
-        </div>
 
 
+            {% csrf_token %}
+            <input type="hidden" name="editable_comment_id_{{ comment.id }}" id="editable_comment_id__{{ comment.id }}" value="{{comment.id}}"/>
+            {% if userinfo.sub == comment.user_id or userinfo.sub == 'auth0|63549aff5615e6a1bdb55e3d'%}
+                <textarea style="max-width: 27rem;background-color: #dcf1fd" name="editable_comment_text_{{ comment.id }}" class="form-control" id="editable_comment_text_{{ comment.id }}" rows="3">{{ comment.text }}</textarea>
+                <button class="btn btn-danger" onclick="deleteComment()">
+                    Obriši
+                </button>
+                <button class="btn btn-success" type="submit" onclick="updateComment({{ comment.id }})">
+                    Ažuriraj
+                </button>
 
-    {% endfor %}
+            {% else %}
+                <textarea readonly style="max-width: 27rem;background-color: #ffeef1" name="comment_text" class="form-control" id="comment_text" rows="3">{{ comment.text }}</textarea>
+            {% endif %}
+
+        {% endfor %}
+    </form>
 
 
 </div>
 </body>
 
 <script>
-    $(document).on('submit','#post-form',function(e){
-        e.preventDefault();
+    function deleteComment() {
+
+        $.ajax({
+            type:'DELETE',
+            contentType: 'application/json',
+            url: '/league/comment/' +  $('#comment_id').val() + '/',
+            headers: {
+                'X-CSRFToken':$('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(data){
+                window.location.reload()
+            },
+            error: function (data) {
+                window.location.reload()
+            }
+        });
+    }
+
+    function createComment() {
         $.ajax({
             type:'POST',
             contentType: 'application/json',
@@ -108,6 +97,36 @@
             }
         });
         document.getElementById('comment_text').value = ''
-    });
+    }
+
+    function updateComment(comment_id) {
+
+
+        console.log(comment_id)
+        console.log($(`#editable_comment_text_${comment_id}`).val())
+        $.ajax({
+            type:'PUT',
+            contentType: 'application/json',
+            url: '/league/comment/' + comment_id + '/',
+            headers: {
+                'X-CSRFToken':$('input[name=csrfmiddlewaretoken]').val()
+            },
+            data: JSON.stringify({
+                user_id:$('#user_id').val(),
+                username:$('#username').val(),
+                comment_text:$(`#editable_comment_text_${comment_id}`).val(),
+                match_round:$('#match_round').val()
+            }),
+            success: function(data){
+                window.location.reload()
+            },
+            error: function (data) {
+                window.location.reload()
+            }
+        });
+        document.getElementById('comment_text').value = ''
+    }
+
+
 </script>
 </html>
