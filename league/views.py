@@ -10,8 +10,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from league.models import TableTeam, Match, Comment
-from league.serializers import CommentSerializer
-
+from league.serializers import CommentSerializer, MatchSerializer
 
 logger = logging.getLogger('info')
 
@@ -122,7 +121,7 @@ class CommentView(viewsets.ModelViewSet):
 #TODO: implementiraj admin dodavanje, brisanje, uređivanje Match
 class MatchView(viewsets.ModelViewSet):
     http_method_names = ['post', 'put', 'delete']
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+    queryset = Match.objects.all()
+    serializer_class = MatchSerializer
 
 

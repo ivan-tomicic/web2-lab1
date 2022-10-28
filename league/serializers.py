@@ -2,7 +2,7 @@ import logging
 
 from rest_framework import serializers
 
-from league.models import TableTeam, Team, Comment
+from league.models import TableTeam, Team, Comment, Match
 
 logger = logging.getLogger('error')
 
@@ -46,5 +46,30 @@ class CommentSerializer(serializers.ModelSerializer):
         comment = Comment.objects.filter(id=self.context["comment_id"], user_id=self.context["user_id"]).update(text=self.data["text"])
         return comment
 
+
+class MatchSerializer(serializers.ModelSerializer):
+
+    text = serializers.CharField(required=True, min_length=2)
+    match_round = serializers.IntegerField(required=True)
+
+    class Meta:
+        model = Match
+        fields = ('text', 'match_round')
+
+    def create(self, validated_data):
+        try:
+            user_id = self.context['user_id']
+            username = self.context['username']
+            comment = Comment.objects.create(user_id=user_id, username=username, **validated_data)
+
+            return comment
+
+        except Exception as e:
+            logger.error(e)
+            raise Exception
+
+    def update(self):
+        comment = Comment.objects.filter(id=self.context["comment_id"], user_id=self.context["user_id"]).update(text=self.data["text"])
+        return comment
 
 

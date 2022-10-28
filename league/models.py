@@ -11,9 +11,7 @@ class Match(models.Model):
     home_team_goals = models.IntegerField(null=True)
     away_team_goals = models.IntegerField(null=True)
     begin_time = models.DateTimeField(null=True)
-    end_time = models.DateTimeField(null=True)
     match_round = models.IntegerField(null=False, validators=[MinValueValidator(1), MaxValueValidator(36)])
-    game_played = models.BooleanField(null=False, default=False)
 
 class Comment(models.Model):
     text = models.TextField(blank=False, max_length=10000, unique=False)
