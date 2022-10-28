@@ -1,10 +1,11 @@
 import json, logging
+import os
 
 from django.db import transaction, Error
 from django.db.models import Count, Case, When, F
 from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
@@ -59,32 +60,57 @@ def match_round(request, match_round):
             "round_number": match_round,
             "matches": matches,
             "comments": comments if request.session.get("user") else None,
+            "is_admin": os.getenv("ADMIN_ID") == request.session.get("user").get("userinfo").get("sub")
         },
     )
 
 
-@transaction.atomic
-@api_view(['POST'])
-def create_comment(request):
-    print(request.session.get("user"))
-    print(request.headers)
-    user_id = request.session.get("user").get("userinfo").get("sub")
-    username = request.session.get("user").get("userinfo").get("name")
+class CommentView(viewsets.ModelViewSet):
+    http_method_names = ['post', 'put', 'delete']
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    @transaction.atomic
+    def create(self, request):
+        user_id = request.session.get("user").get("userinfo").get("sub")
+        username = request.session.get("user").get("userinfo").get("name")
+        comment_serializer = CommentSerializer(data=request.data,
+                                             context={'user_id': user_id, 'username': username})
+        if comment_serializer.is_valid(raise_exception=True):
+            try:
+                with transaction.atomic():
+                    comment_serializer.save()
+            except Error as error:
+                transaction.set_rollback(True)
+                return Response("Error when saving comment to database.", status=status.HTTP_400_BAD_REQUEST)
+            return Response(comment_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(comment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    comment_serializer = CommentSerializer(data=request.data,
-                                           context={'user_id': user_id, 'username': username})
-    if comment_serializer.is_valid(raise_exception=True):
+    @transaction.atomic
+    def destroy(self, request, pk=None):
+        user_id = request.session.get("user").get("userinfo").get("sub")
         try:
-            with transaction.atomic():
-                comment_serializer.save()
+            if user_id == os.getenv("ADMIN_ID"):
+                Comment.objects.filter(id=pk).delete()
+            else:
+                Comment.objects.get(id=pk, user_id=user_id).delete()
+        except Comment.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @transaction.atomic
+    def update(self, request, pk=None):
+        user_id = request.session.get("user").get("userinfo").get("sub")
+        comment_serializer = CommentSerializer(data=request.data,
+                                               context={'user_id': user_id, 'comment_id': pk})
+        if comment_serializer.is_valid(raise_exception=True):
+            try:
+                with transaction.atomic():
+                    comment_serializer.update()
+            except Error as error:
+                transaction.set_rollback(True)
+                return Response("Error when updating comment", status=status.HTTP_400_BAD_REQUEST)
+            return Response(comment_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(comment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-        except Error as error:
-            transaction.set_rollback(True)
-            return Response("Error when saving comment to database.", status=status.HTTP_400_BAD_REQUEST)
-        return Response(comment_serializer.data, status=status.HTTP_201_CREATED)
-    return Response(comment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-def update_comment(request):
-    pass

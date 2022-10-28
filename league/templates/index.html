@@ -36,7 +36,7 @@
     <h1>Kola: </h1>
     <hr class="mt-0 mb-4">
     {% for round in match_rounds %}
-        <a href={{ request.path }}{{ "match_round/"}}{{ round.match_round }}> Kolo broj {{ round.match_round }}</a> Odigrano {{ round.played }}/{{ round.played|add:round.not_played }}
+        <a href={{ request.path }}{{ "match_round/"}}{{ round.match_round }}> Kolo broj {{ round.match_round }}</a> Odigrano {{ round.played }}/5
         <br>
     {% endfor %}
 

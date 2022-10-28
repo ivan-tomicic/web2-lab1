@@ -42,5 +42,9 @@ class CommentSerializer(serializers.ModelSerializer):
             logger.error(e)
             raise Exception
 
+    def update(self):
+        comment = Comment.objects.filter(id=self.context["comment_id"], user_id=self.context["user_id"]).update(text=self.data["text"])
+        return comment
+
 
 

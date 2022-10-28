@@ -53,7 +53,7 @@
 
     {% if session %}
         <div style="margin-top: 50px">
-            {% include 'comments.html' with comments=comments userinfo=session.userinfo match_round=round_number access_token=session.access_token %}
+            {% include 'comments.html' with comments=comments userinfo=session.userinfo match_round=round_number access_token=session.access_token is_admin=is_admin %}
         </div>
 
     {% endif %}
