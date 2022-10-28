@@ -19,35 +19,38 @@
     <form id="post-form" style="margin-bottom: 30px">
         {% csrf_token %}
         <textarea style="max-width: 27rem;" name="comment_text" class="form-control" id="comment_text" rows="3"></textarea>
-        <input type="hidden" name="user_id" id="user_id" value="{{userinfo.sub}}"/>
-        <input type="hidden" name="username" id="username" value="{{userinfo.name}}"/>
         <input type="hidden" name="match_round" id="match_round" value="{{match_round}}"/>
-        <button class="btn btn-primary" type="submit" style="margin-top: 20px" onclick="createComment()">Komentiraj</button>
+        <button class="btn btn-primary" type="button" style="margin-top: 20px" onclick="create_comment()">Komentiraj</button>
     </form>
 
 
     <form id="update-delete-form" style="margin-bottom: 5px; margin-left: 5px">
+        {% csrf_token %}
         {% for comment in comments %}
             <div>{{ comment.username }} &nbsp&nbsp&nbsp&nbsp {% timezone "Europe/Zagreb" %}
                 {{ comment.created_on|date:'d.m.Y H:i' }}
             {% endtimezone %}
             </div>
 
+            <div>
 
-            {% csrf_token %}
-            <input type="hidden" name="editable_comment_id_{{ comment.id }}" id="editable_comment_id__{{ comment.id }}" value="{{comment.id}}"/>
-            {% if userinfo.sub == comment.user_id or userinfo.sub == 'auth0|63549aff5615e6a1bdb55e3d'%}
-                <textarea style="max-width: 27rem;background-color: #dcf1fd" name="editable_comment_text_{{ comment.id }}" class="form-control" id="editable_comment_text_{{ comment.id }}" rows="3">{{ comment.text }}</textarea>
-                <button class="btn btn-danger" onclick="deleteComment()">
-                    Obriši
-                </button>
-                <button class="btn btn-success" type="submit" onclick="updateComment({{ comment.id }})">
-                    Ažuriraj
-                </button>
+                <input type="hidden" name="editable_comment_id_{{ comment.id }}" id="editable_comment_id__{{ comment.id }}" value="{{comment.id}}"/>
+                {% if userinfo.sub == comment.user_id or userinfo.sub == 'auth0|63549aff5615e6a1bdb55e3d'%}
+                    <textarea style="max-width: 27rem;background-color: #dcf1fd" name="editable_comment_text_{{ comment.id }}" class="form-control" id="editable_comment_text_{{ comment.id }}" rows="3">{{ comment.text }}</textarea>
+                    <button class="btn btn-danger" type="button" onclick="deleteComment({{ comment.id }})">
+                        Obriši
+                    </button>
+                    {% if userinfo.sub == comment.user_id %}
+                    <button class="btn btn-success" type="button" onclick="updateComment({{ comment.id }})">
+                        Ažuriraj
+                    </button>
+                    {% endif %}
 
-            {% else %}
-                <textarea readonly style="max-width: 27rem;background-color: #ffeef1" name="comment_text" class="form-control" id="comment_text" rows="3">{{ comment.text }}</textarea>
-            {% endif %}
+                {% else %}
+                    <textarea readonly style="max-width: 27rem;background-color: #ffeef1" name="comment_text" class="form-control" id="comment_text" rows="3">{{ comment.text }}</textarea>
+                {% endif %}
+            </div>
+
 
         {% endfor %}
     </form>
@@ -57,12 +60,12 @@
 </body>
 
 <script>
-    function deleteComment() {
+    function deleteComment(comment_id) {
 
         $.ajax({
             type:'DELETE',
             contentType: 'application/json',
-            url: '/league/comment/' +  $('#comment_id').val() + '/',
+            url: '/league/comment/' +  comment_id + '/',
             headers: {
                 'X-CSRFToken':$('input[name=csrfmiddlewaretoken]').val()
             },
@@ -75,7 +78,7 @@
         });
     }
 
-    function createComment() {
+    function create_comment() {
         $.ajax({
             type:'POST',
             contentType: 'application/json',
@@ -84,15 +87,14 @@
                 'X-CSRFToken':$('input[name=csrfmiddlewaretoken]').val()
             },
             data: JSON.stringify({
-                user_id:$('#user_id').val(),
-                username:$('#username').val(),
-                comment_text:$('#comment_text').val(),
-                match_round:$('#match_round').val()
+
+                text:$('#comment_text').val(),
+                match_round:parseInt($('#match_round').val())
             }),
-            success: function(data){
+            success: function(){
                 window.location.reload()
             },
-            error: function (data) {
+            error: function () {
                 window.location.reload()
             }
         });
@@ -102,8 +104,7 @@
     function updateComment(comment_id) {
 
 
-        console.log(comment_id)
-        console.log($(`#editable_comment_text_${comment_id}`).val())
+
         $.ajax({
             type:'PUT',
             contentType: 'application/json',
@@ -112,10 +113,9 @@
                 'X-CSRFToken':$('input[name=csrfmiddlewaretoken]').val()
             },
             data: JSON.stringify({
-                user_id:$('#user_id').val(),
-                username:$('#username').val(),
-                comment_text:$(`#editable_comment_text_${comment_id}`).val(),
-                match_round:$('#match_round').val()
+
+                text:$(`#editable_comment_text_${comment_id}`).val(),
+                match_round:parseInt($('#match_round').val())
             }),
             success: function(data){
                 window.location.reload()
@@ -124,7 +124,7 @@
                 window.location.reload()
             }
         });
-        document.getElementById('comment_text').value = ''
+
     }
 
 
