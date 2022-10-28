@@ -1,20 +1,20 @@
 import json, logging
 
 from django.db import transaction, Error
-from django.db.models import Count, Case, When, Q, F
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework import viewsets, status
+from django.db.models import Count, Case, When, F
+from django.shortcuts import render
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from auth_app.utils import requires_scope
 from league.models import TableTeam, Match, Comment
 from league.serializers import CommentSerializer
 
+
 logger = logging.getLogger('info')
+
+
 
 
 @api_view(['GET'])
@@ -63,32 +63,28 @@ def match_round(request, match_round):
     )
 
 
-@permission_classes([AllowAny])
-class CommentView(viewsets.ModelViewSet):
-    http_method_names = ['post', 'put', 'delete']
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+@transaction.atomic
+@api_view(['POST'])
+def create_comment(request):
+    print(request.session.get("user"))
+    print(request.headers)
+    user_id = request.session.get("user").get("userinfo").get("sub")
+    username = request.session.get("user").get("userinfo").get("name")
+
+    comment_serializer = CommentSerializer(data=request.data,
+                                           context={'user_id': user_id, 'username': username})
+    if comment_serializer.is_valid(raise_exception=True):
+        try:
+            with transaction.atomic():
+                comment_serializer.save()
 
 
+        except Error as error:
+            transaction.set_rollback(True)
+            return Response("Error when saving comment to database.", status=status.HTTP_400_BAD_REQUEST)
+        return Response(comment_serializer.data, status=status.HTTP_201_CREATED)
+    return Response(comment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-    @requires_scope('create:comment')
-    @transaction.atomic
-    def create(self, request):
-        user_id = request.session.get("user").get("userinfo").get("sub")
-        username = request.session.get("user").get("userinfo").get("name")
-
-        comment_serializer = CommentSerializer(data=request.data,
-                                             context={'user_id': user_id, 'username': username})
-        if comment_serializer.is_valid(raise_exception=True):
-            try:
-                with transaction.atomic():
-                    comment_serializer.save()
-
-
-            except Error as error:
-                transaction.set_rollback(True)
-                return Response("Error when saving comment to database.", status=status.HTTP_400_BAD_REQUEST)
-            return Response(comment_serializer.data, status=status.HTTP_201_CREATED)
-        return Response(comment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+def update_comment(request):
+    pass
