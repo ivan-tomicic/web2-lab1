@@ -7,7 +7,7 @@
 
 
 
-    <div id="accordion">
+    <div id="accordion" style="margin-top: 60px">
         {% for match_round in matches_rounds %}
             <div class="card">
                 <div class="card-header" id="heading_{{ match_round.match_round }}">
@@ -19,7 +19,9 @@
                 </div>
                 <div id="collapse_{{ match_round.match_round }}" class="collapse" aria-labelledby="heading_{{ match_round.match_round }}" data-parent="#accordion">
                     <div class="card-body">
-                        Ovdje ce biti uređivanje utakmica...
+                        {% for match in match_round.matches %}
+                            <p>{{ match.home_team_name }}</p>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

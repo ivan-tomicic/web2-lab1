@@ -4,6 +4,7 @@ import os
 from django.db import transaction, Error
 from django.db.models import Count, F, DateTimeField, CharField
 from django.db.models.functions import TruncSecond, Cast
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework import status, viewsets
@@ -124,6 +125,7 @@ class MatchView(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def edit_match_view(request):
+    #TODO: dodati provjeru da je user admin
     all_matches = Match.objects.all()
     teams = Team.objects.all().values('id', 'name').order_by('id')
     matche_rounds = []
@@ -131,16 +133,20 @@ def edit_match_view(request):
         matche_rounds.append({
             'match_round': match_round,
             'matches': list(all_matches.filter(match_round=match_round)
-                               .annotate(begin_time_str=Cast(TruncSecond('begin_time', DateTimeField()), CharField()))
+                               .annotate(begin_time_str=Cast(TruncSecond('begin_time', DateTimeField()), CharField()),
+                                         home_team_name=F('home_team__name'),
+                                         away_team_name=F('away_team__name'))
                                .values())
 
         })
-    print(matche_rounds)
+    #print(matche_rounds)
 
     user = request.session.get("user")
     is_admin = False
     if user:
         is_admin = os.getenv("ADMIN_ID") == user.get("userinfo").get("sub")
+    if not is_admin:
+        return HttpResponse(status=status.HTTP_403_FORBIDDEN)
     return render(
         request,
         "edit_matches.html",
