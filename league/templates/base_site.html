@@ -140,7 +140,11 @@
         <img src="{{session.userinfo.picture}}" />
         <p class="userinfo">{{session.userinfo.name}}</p>
         <a href="{% url 'index' %}">Tablica</a>
+        {% if is_admin %}
+             <a href="{% url 'edit_match' %}">Uređivanje utakmica</a>
+        {% endif %}
         <a href="{% url 'logout' %}">Odjavi se</a>
+
 
     {% else %}
         <a href="{% url 'index' %}">Tablica</a>

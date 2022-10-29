@@ -1,0 +1,15 @@
+{% extends 'base_site.html' %}
+
+
+{% block content %}
+<h1> Upravljanje utakmicama </h1>
+
+    {% for team in teams %}
+        <p> {{ team.id }} - {{ team.name }}</p>
+    {% endfor %}
+
+    {% for match_round in matches_rounds %}
+        <p> {{ match_round.match_round }} - </p>
+    {% endfor %}
+
+{% endblock %}

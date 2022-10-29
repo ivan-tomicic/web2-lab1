@@ -21,6 +21,8 @@
         </tr>
         </thead>
         <tbody>
+        <form id="update-delete-form" >
+        {% csrf_token %}
         {% for match in matches %}
             <tr>
                 <td>
@@ -48,6 +50,7 @@
                 </td>
             </tr>
         {% endfor %}
+        </form>
         </tbody>
     </table>
 
