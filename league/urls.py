@@ -10,5 +10,5 @@ urlpatterns = [
     path('', views.index, name='index'),
     re_path('match_round/(?P<match_round>\d+)/', views.match_round, name='match_round'),
     path('', include(router.urls)),
-    path('edit_match', views.edit_match_view, name='edit_match')
+    path('edit_match', views.edit_match_view, name='edit_matches')
 ]

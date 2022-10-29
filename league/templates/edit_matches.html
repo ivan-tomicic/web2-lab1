@@ -1,0 +1,31 @@
+{% extends 'base_site.html' %}
+
+
+{% block content %}
+    <h1> Upravljanje utakmicama </h1>
+
+
+
+
+    <div id="accordion">
+        {% for match_round in matches_rounds %}
+            <div class="card">
+                <div class="card-header" id="heading_{{ match_round.match_round }}">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse_{{ match_round.match_round }}" aria-expanded="false" aria-controls="collapse_{{ match_round.match_round }}">
+                            Kolo {{ match_round.match_round }}
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapse_{{ match_round.match_round }}" class="collapse" aria-labelledby="heading_{{ match_round.match_round }}" data-parent="#accordion">
+                    <div class="card-body">
+                        Ovdje ce biti uređivanje utakmica...
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+
+
+{% endblock %}

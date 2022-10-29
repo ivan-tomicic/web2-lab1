@@ -127,7 +127,7 @@ def edit_match_view(request):
     all_matches = Match.objects.all()
     teams = Team.objects.all().values('id', 'name').order_by('id')
     matche_rounds = []
-    for match_round in all_matches.values_list('match_round', flat=True).distinct():
+    for match_round in all_matches.values_list('match_round', flat=True).distinct().order_by('match_round'):
         matche_rounds.append({
             'match_round': match_round,
             'matches': list(all_matches.filter(match_round=match_round)
@@ -143,7 +143,7 @@ def edit_match_view(request):
         is_admin = os.getenv("ADMIN_ID") == user.get("userinfo").get("sub")
     return render(
         request,
-        "edit_match.html",
+        "edit_matches.html",
         context={
             "session": request.session.get("user"),
             "pretty": json.dumps(request.session.get("user"), indent=4),
