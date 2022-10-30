@@ -117,46 +117,6 @@ class CommentView(viewsets.ModelViewSet):
         return Response(comment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class MatchView(viewsets.ModelViewSet):
-    http_method_names = ['post', 'put', 'delete']
-    queryset = Match.objects.all()
-    serializer_class = MatchSerializer
 
-
-@api_view(['GET'])
-def edit_match_view(request):
-    #TODO: dodati provjeru da je user admin
-    all_matches = Match.objects.all()
-    teams = Team.objects.all().values('id', 'name').order_by('id')
-    matche_rounds = []
-    for match_round in all_matches.values_list('match_round', flat=True).distinct().order_by('match_round'):
-        matche_rounds.append({
-            'match_round': match_round,
-            'matches': list(all_matches.filter(match_round=match_round)
-                               .annotate(begin_time_str=Cast(TruncSecond('begin_time', DateTimeField()), CharField()),
-                                         home_team_name=F('home_team__name'),
-                                         away_team_name=F('away_team__name'))
-                               .values())
-
-        })
-    #print(matche_rounds)
-
-    user = request.session.get("user")
-    is_admin = False
-    if user:
-        is_admin = os.getenv("ADMIN_ID") == user.get("userinfo").get("sub")
-    if not is_admin:
-        return HttpResponse(status=status.HTTP_403_FORBIDDEN)
-    return render(
-        request,
-        "edit_matches.html",
-        context={
-            "session": request.session.get("user"),
-            "pretty": json.dumps(request.session.get("user"), indent=4),
-            "matches_rounds": matche_rounds,
-            "is_admin": is_admin,
-            "teams": teams
-        },
-    )
 
 

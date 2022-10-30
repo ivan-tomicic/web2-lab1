@@ -35,7 +35,7 @@
 
 
 
-                <input type="hidden" name="editable_comment_id_{{ comment.id }}" id="editable_comment_id__{{ comment.id }}" value="{{comment.id}}"/>
+                <!--input type="hidden" name="editable_comment_id_{{ comment.id }}" id="editable_comment_id__{{ comment.id }}" value="{{comment.id}}"/-->
                 {% if userinfo.sub == comment.user_id or is_admin %}
                     <textarea style="max-width: 27rem;background-color: #dcf1fd" name="editable_comment_text_{{ comment.id }}" class="form-control" id="editable_comment_text_{{ comment.id }}" rows="3">{{ comment.text }}</textarea>
                     <div style="margin-top: 15px">
